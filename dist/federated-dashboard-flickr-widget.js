@@ -24,9 +24,10 @@
     function API() {}
 
     API.search = function(searchString, callback) {
-      var flickr;
+      var apiKey, flickr;
+      apiKey = this.key;
       flickr = new Flickr({
-        api_key: "a48194703ae0d0d1055d6ded6c4c9869"
+        api_key: apiKey
       });
       return flickr.photos.search({
         text: searchString,
@@ -105,7 +106,7 @@
     function Template() {}
 
     Template.renderImagesHtml = function(images) {
-      return _.template("<div data-id=\"images\" id=\"flickr-images\">\n  <% for(var i = 0; i < images.length; i++){ %>\n    <img src=\"<%= images[i].url_n %> alt=\"<%= images[i].title %>\">\n  <% } %>\n</div>", {
+      return _.template("<div data-id=\"images\" id=\"flickr-images\">\n  <% for(var i = 0; i < images.length; i++){ %>\n    <img src=\"<%= images[i].url_n %>\" alt=\"<%= images[i].title %>\">\n  <% } %>\n</div>", {
         images: images
       });
     };

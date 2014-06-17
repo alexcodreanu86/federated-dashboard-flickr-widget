@@ -2,8 +2,9 @@ namespace('Pictures')
 
 class Pictures.API
   @search: (searchString, callback)->
+    apiKey = @key
     flickr =  new Flickr(
-      api_key: "a48194703ae0d0d1055d6ded6c4c9869"
+      api_key: apiKey
     )
     flickr.photos.search({
         text: searchString,

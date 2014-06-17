@@ -5,7 +5,7 @@ class Pictures.Template
     _.template( """
                   <div data-id="images" id="flickr-images">
                     <% for(var i = 0; i < images.length; i++){ %>
-                      <img src="<%= images[i].url_n %> alt="<%= images[i].title %>">
+                      <img src="<%= images[i].url_n %>" alt="<%= images[i].title %>">
                     <% } %>
                   </div>
                 """, {images: images})
