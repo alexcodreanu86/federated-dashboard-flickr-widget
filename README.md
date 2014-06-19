@@ -8,4 +8,4 @@ To use the widget just add the `dist/federated-dashboard-flickr-widget.js` to yo
 <script src="/bower_components/markitondemand-widget/dist/federated-dashboard-markitondemand-widget.js"></script>
 ```
 
-Now all you have to do is call Pictures.Controller.setupWidgetIn('.container', 'api_key_here') where .container can be any desired JQuery selector that you want to serve as the container of the widget and `your_api_key` is the api key that you got from [flickr.com](https://www.flickr.com/services/apps/create/apply/)
+Now all you have to do is call `Pictures.Controller.setupWidgetIn('.container', 'api_key_here')` where `.container` can be any desired JQuery selector that you want to serve as the container of the widget and `your_api_key` is the api key that you got from [flickr.com](https://www.flickr.com/services/apps/create/apply/)
