@@ -1,6 +1,6 @@
 namespace('Pictures')
 
-class Pictures.Template
+class Pictures.Templates
   @renderImagesHtml: (images) ->
     _.template( """
                   <div data-id="images" id="flickr-images">
@@ -16,3 +16,6 @@ class Pictures.Template
                 <button id="pictures" data-id="pictures-button">Get pictures</button><br>
                 <div data-id="pictures-output"></div>
                """)
+
+  @renderLogo: (imgData) ->
+    _.template("<img src='<%= imgData['imgSrc'] %>' data-id='<%= imgData['dataId'] %>' style='width: <%= imgData['width'] %>px'/>", {imgData: imgData})

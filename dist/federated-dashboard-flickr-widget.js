@@ -7369,19 +7369,19 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     function Controller() {}
 
     Controller.loadImages = function(searchStr) {
-      return Pictures.API.search(searchStr, Pictures.View.addImages);
+      return Pictures.API.search(searchStr, Pictures.Display.addImages);
     };
 
     Controller.setupWidgetIn = function(container, apiKey) {
       Pictures.API.key = apiKey;
-      Pictures.View.appendFormTo(container);
+      Pictures.Display.appendFormTo(container);
       return this.bind();
     };
 
     Controller.bind = function() {
       return $('[data-id=pictures-button]').click((function(_this) {
         return function() {
-          return _this.processInput(Pictures.View.getInput());
+          return _this.processInput(Pictures.Display.getInput());
         };
       })(this));
     };
@@ -7417,20 +7417,26 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
 (function() {
   namespace('Pictures');
 
-  Pictures.Template = (function() {
-    function Template() {}
+  Pictures.Templates = (function() {
+    function Templates() {}
 
-    Template.renderImagesHtml = function(images) {
+    Templates.renderImagesHtml = function(images) {
       return _.template("<div data-id=\"images\" id=\"flickr-images\">\n  <% for(var i = 0; i < images.length; i++){ %>\n    <img src=\"<%= images[i].url_n %>\" alt=\"<%= images[i].title %>\">\n  <% } %>\n</div>", {
         images: images
       });
     };
 
-    Template.renderForm = function() {
+    Templates.renderForm = function() {
       return _.template("<input name=\"pictures-search\" type=\"text\"><br>\n<button id=\"pictures\" data-id=\"pictures-button\">Get pictures</button><br>\n<div data-id=\"pictures-output\"></div>");
     };
 
-    return Template;
+    Templates.renderLogo = function(imgData) {
+      return _.template("<img src='<%= imgData['imgSrc'] %>' data-id='<%= imgData['dataId'] %>' style='width: <%= imgData['width'] %>px'/>", {
+        imgData: imgData
+      });
+    };
+
+    return Templates;
 
   })();
 
@@ -7439,26 +7445,37 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
 (function() {
   namespace('Pictures');
 
-  Pictures.View = (function() {
-    function View() {}
+  Pictures.Display = (function() {
+    function Display() {}
 
-    View.getInput = function() {
+    Display.getInput = function() {
       return $('[name=pictures-search]').val();
     };
 
-    View.addImages = function(images) {
+    Display.addImages = function(images) {
       var imagesHtml;
-      imagesHtml = Pictures.Template.renderImagesHtml(images);
+      imagesHtml = Pictures.Templates.renderImagesHtml(images);
       return $('[data-id=pictures-output]').html(imagesHtml);
     };
 
-    View.appendFormTo = function(selector) {
+    Display.appendFormTo = function(selector) {
       var formHtml;
-      formHtml = Pictures.Template.renderForm();
+      formHtml = Pictures.Templates.renderForm();
       return $(selector).html(formHtml);
     };
 
-    return View;
+    Display.logoSrc = "https://raw.githubusercontent.com/bwvoss/federated-dashboard-flickr-widget/master/lib/icon_10308/images.png";
+
+    Display.generateLogo = function(config) {
+      var logoSrc;
+      logoSrc = this.logoSrc;
+      _.extend(config, {
+        imgSrc: logoSrc
+      });
+      return Pictures.Templates.renderLogo(config);
+    };
+
+    return Display;
 
   })();
 

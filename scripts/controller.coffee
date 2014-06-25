@@ -2,15 +2,15 @@ namespace('Pictures')
 
 class Pictures.Controller
   @loadImages: (searchStr) ->
-    Pictures.API.search(searchStr, Pictures.View.addImages)
+    Pictures.API.search(searchStr, Pictures.Display.addImages)
 
   @setupWidgetIn: (container, apiKey) ->
     Pictures.API.key = apiKey
-    Pictures.View.appendFormTo(container)
+    Pictures.Display.appendFormTo(container)
     @bind()
 
   @bind: ->
-    $('[data-id=pictures-button]').click(=> @processInput(Pictures.View.getInput()))
+    $('[data-id=pictures-button]').click(=> @processInput(Pictures.Display.getInput()))
 
   @processInput: (input) ->
     if @isValidInput(input)
