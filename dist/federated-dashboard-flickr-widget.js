@@ -7406,9 +7406,46 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
       return !string.match(/[^\w\s]/);
     };
 
-    Controller.showInvalidInput = function() {};
-
     return Controller;
+
+  })();
+
+}).call(this);
+
+(function() {
+  namespace('Pictures');
+
+  Pictures.Display = (function() {
+    function Display() {}
+
+    Display.getInput = function() {
+      return $('[name=pictures-search]').val();
+    };
+
+    Display.addImages = function(images) {
+      var imagesHtml;
+      imagesHtml = Pictures.Templates.renderImagesHtml(images);
+      return $('[data-id=pictures-output]').html(imagesHtml);
+    };
+
+    Display.appendFormTo = function(selector) {
+      var formHtml;
+      formHtml = Pictures.Templates.renderForm();
+      return $(selector).html(formHtml);
+    };
+
+    Display.logoSrc = "https://raw.githubusercontent.com/bwvoss/federated-dashboard-flickr-widget/master/lib/icon_10308/images.png";
+
+    Display.generateLogo = function(config) {
+      var logoSrc;
+      logoSrc = this.logoSrc;
+      _.extend(config, {
+        imgSrc: logoSrc
+      });
+      return Pictures.Templates.renderLogo(config);
+    };
+
+    return Display;
 
   })();
 

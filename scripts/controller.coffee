@@ -26,5 +26,3 @@ class Pictures.Controller
 
   @hasOnlyValidCharacters: (string) ->
     !string.match(/[^\w\s]/)
-
-  @showInvalidInput: ->
