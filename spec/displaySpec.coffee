@@ -25,3 +25,16 @@ describe "Pictures.Display", ->
   it "generateLogo returns the pictures image tag", ->
     imageHtml = Pictures.Display.generateLogo({dataId: "pictures-logo"})
     expect(imageHtml).toBeMatchedBy('[data-id=pictures-logo]')
+
+  it "hideForm is hiding the form", ->
+    setFixtures(sandbox())
+    Pictures.Controller.setupWidgetIn('#sandbox')
+    Pictures.Display.hideForm()
+    expect($('[data-id=pictures-form]').attr('style')).toEqual('display: none;')
+
+  it "showForm displays the form", ->
+    setFixtures(sandbox())
+    Pictures.Controller.setupWidgetIn('#sandbox')
+    Pictures.Display.hideForm()
+    Pictures.Display.showForm()
+    expect($('[data-id=pictures-form]').attr('style')).not.toEqual('display: none;')

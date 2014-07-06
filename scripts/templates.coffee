@@ -12,9 +12,13 @@ class Pictures.Templates
 
   @renderForm: ->
     _.template("""
-                <input name="pictures-search" type="text"><br>
-                <button id="pictures" data-id="pictures-button">Get pictures</button><br>
-                <div data-id="pictures-output"></div>
+                <div data-id='pictures-widget-wrapper'>
+                  <div data-id='pictures-form'>
+                    <input name="pictures-search" type="text">
+                    <button id="pictures" data-id="pictures-button">Get pictures</button><br>
+                  </div>
+                  <div data-id="pictures-output"></div>
+                </div>
                """)
 
   @renderLogo: (imgData) ->

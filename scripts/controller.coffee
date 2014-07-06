@@ -12,6 +12,9 @@ class Pictures.Controller
   @bind: ->
     $('[data-id=pictures-button]').click(=> @processInput(Pictures.Display.getInput()))
 
+  @unbind: ->
+    $('[data-id=pictures-button]').unbind('click')
+
   @processInput: (input) ->
     if @isValidInput(input)
       @loadImages(input)

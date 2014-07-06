@@ -18,3 +18,9 @@ class Pictures.Display
     logoSrc = @logoSrc
     _.extend(config, {imgSrc: logoSrc})
     Pictures.Templates.renderLogo(config)
+
+  @hideForm: ->
+    $('[data-id=pictures-form]').hide()
+
+  @showForm: ->
+    $('[data-id=pictures-form]').show()

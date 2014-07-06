@@ -7386,6 +7386,10 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
       })(this));
     };
 
+    Controller.unbind = function() {
+      return $('[data-id=pictures-button]').unbind('click');
+    };
+
     Controller.processInput = function(input) {
       if (this.isValidInput(input)) {
         return this.loadImages(input);
@@ -7445,6 +7449,14 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
       return Pictures.Templates.renderLogo(config);
     };
 
+    Display.hideForm = function() {
+      return $('[data-id=pictures-form]').hide();
+    };
+
+    Display.showForm = function() {
+      return $('[data-id=pictures-form]').show();
+    };
+
     return Display;
 
   })();
@@ -7464,7 +7476,7 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     };
 
     Templates.renderForm = function() {
-      return _.template("<input name=\"pictures-search\" type=\"text\"><br>\n<button id=\"pictures\" data-id=\"pictures-button\">Get pictures</button><br>\n<div data-id=\"pictures-output\"></div>");
+      return _.template("<div data-id='pictures-widget-wrapper'>\n  <div data-id='pictures-form'>\n    <input name=\"pictures-search\" type=\"text\">\n    <button id=\"pictures\" data-id=\"pictures-button\">Get pictures</button><br>\n  </div>\n  <div data-id=\"pictures-output\"></div>\n</div>");
     };
 
     Templates.renderLogo = function(imgData) {
@@ -7474,45 +7486,6 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     };
 
     return Templates;
-
-  })();
-
-}).call(this);
-
-(function() {
-  namespace('Pictures');
-
-  Pictures.Display = (function() {
-    function Display() {}
-
-    Display.getInput = function() {
-      return $('[name=pictures-search]').val();
-    };
-
-    Display.addImages = function(images) {
-      var imagesHtml;
-      imagesHtml = Pictures.Templates.renderImagesHtml(images);
-      return $('[data-id=pictures-output]').html(imagesHtml);
-    };
-
-    Display.appendFormTo = function(selector) {
-      var formHtml;
-      formHtml = Pictures.Templates.renderForm();
-      return $(selector).html(formHtml);
-    };
-
-    Display.logoSrc = "https://raw.githubusercontent.com/bwvoss/federated-dashboard-flickr-widget/master/lib/icon_10308/images.png";
-
-    Display.generateLogo = function(config) {
-      var logoSrc;
-      logoSrc = this.logoSrc;
-      _.extend(config, {
-        imgSrc: logoSrc
-      });
-      return Pictures.Templates.renderLogo(config);
-    };
-
-    return Display;
 
   })();
 

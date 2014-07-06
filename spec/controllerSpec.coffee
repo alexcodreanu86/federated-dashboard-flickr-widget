@@ -22,6 +22,15 @@ describe "Pictures.Controller", ->
     $('[data-id=pictures-button]').click()
     expect($('img').length).toEqual(6)
 
+  it "unbind disables the click event", ->
+    setupFixtures()
+    Pictures.Controller.bind()
+    inputInto('pictures-search', 'bikes')
+    Pictures.Controller.unbind()
+    $('[data-id=pictures-button]').click()
+    expect($('[data-id=pictures-output]')).toBeEmpty()
+
+
   it "isValidInput returns true if the string is not empty", ->
     expect(Pictures.Controller.isValidInput("some text")).toBe(true)
 
@@ -39,10 +48,9 @@ describe "Pictures.Controller", ->
   it "setupWidgetIn is setting up widget in the desired element", ->
     setFixtures(sandbox())
     Pictures.Controller.setupWidgetIn('#sandbox', "123456")
-    html = $('#sandbox')
-    expect(html).toContainElement('[name=pictures-search]')
-    expect(html).toContainElement('[data-id=pictures-button]')
-    expect(html).toContainElement('[data-id=pictures-output]')
+    expect($('#sandbox')).toContainElement('[name=pictures-search]')
+    expect($('#sandbox')).toContainElement('[data-id=pictures-button]')
+    expect($('#sandbox')).toContainElement('[data-id=pictures-output]')
 
   it "setupWidgetIn is assinging the apiKey to a global variable", ->
     setFixtures(sandbox())
