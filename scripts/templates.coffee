@@ -12,12 +12,15 @@ class Pictures.Templates
 
   @renderForm: ->
     _.template("""
-                <div data-id='pictures-widget-wrapper'>
-                  <div data-id='pictures-form'>
-                    <input name="pictures-search" type="text">
-                    <button id="pictures" data-id="pictures-button">Get pictures</button><br>
+                <div class='widget' data-id='pictures-widget-wrapper'>
+                  <div class="widget-header">
+                    <h2 class="widget-title">Pictures</h2>
+                    <div data-id='pictures-form'>
+                      <input name="pictures-search" type="text">
+                      <button id="pictures" data-id="pictures-button">Get pictures</button><br>
+                    </div>
                   </div>
-                  <div data-id="pictures-output"></div>
+                  <div class="widget-body" data-id="pictures-output"></div>
                 </div>
                """)
 
