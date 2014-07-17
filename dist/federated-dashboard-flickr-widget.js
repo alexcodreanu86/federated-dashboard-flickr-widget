@@ -7335,79 +7335,59 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
 (function() {
   namespace('Pictures');
 
-  Pictures.API = (function() {
-    function API() {}
-
-    API.search = function(searchString, callback) {
-      var apiKey, flickr;
-      apiKey = this.key;
-      flickr = new Flickr({
-        api_key: apiKey
-      });
-      return flickr.photos.search({
-        text: searchString,
-        per_page: 6,
-        extras: "url_n"
-      }, function(err, response) {
-        if (err) {
-          throw new Error(err);
-        }
-        return callback(response.photos.photo);
-      });
-    };
-
-    return API;
-
-  })();
-
-}).call(this);
-
-(function() {
-  namespace('Pictures');
-
   Pictures.Controller = (function() {
     function Controller() {}
 
-    Controller.loadImages = function(searchStr) {
-      return Pictures.API.search(searchStr, Pictures.Display.addImages);
-    };
+    Controller.widgets = [];
 
     Controller.setupWidgetIn = function(container, apiKey) {
-      Pictures.API.key = apiKey;
-      Pictures.Display.appendFormTo(container);
-      return this.bind();
+      var widget;
+      widget = new Pictures.Widgets.Controller(container, apiKey);
+      widget.initialize();
+      return this.addToWidgetsContainer(widget);
     };
 
-    Controller.bind = function() {
-      return $('[data-id=pictures-button]').click((function(_this) {
-        return function() {
-          return _this.processInput(Pictures.Display.getInput());
-        };
-      })(this));
+    Controller.addToWidgetsContainer = function(widget) {
+      return this.widgets.push(widget);
     };
 
-    Controller.unbind = function() {
-      return $('[data-id=pictures-button]').unbind('click');
+    Controller.getWidgets = function() {
+      return this.widgets;
     };
 
-    Controller.processInput = function(input) {
-      if (this.isValidInput(input)) {
-        return this.loadImages(input);
-      } else {
-        return this.showInvalidInput();
+    Controller.hideForms = function() {
+      return this.allWidgetsExecute("hideForm");
+    };
+
+    Controller.showForms = function() {
+      return this.allWidgetsExecute("showForm");
+    };
+
+    Controller.allWidgetsExecute = function(command) {
+      return _.each(this.widgets, function(widget) {
+        return widget[command]();
+      });
+    };
+
+    Controller.closeWidgetInContainer = function(container) {
+      var widget;
+      widget = _.filter(this.widgets, function(widget, index) {
+        return widget.container === container;
+      })[0];
+      if (widget) {
+        this.removeWidgetContent(widget);
+        return this.removeFromWidgetsContainer(widget);
       }
     };
 
-    Controller.isValidInput = function(input) {
-      return this.isNotEmpty(input) && this.hasOnlyValidCharacters(input);
+    Controller.removeFromWidgetsContainer = function(widgetToRemove) {
+      return this.widgets = _.reject(this.widgets, function(widget) {
+        return widget === widgetToRemove;
+      });
     };
 
-    Controller.isNotEmpty = function(string) {
-      return string.length !== 0;
-    };
-
-    Controller.hasOnlyValidCharacters = function(string) {
-      return !string.match(/[^\w\s]/);
+    Controller.removeWidgetContent = function(widget) {
+      return widget.removeContent();
     };
 
     return Controller;
@@ -7422,22 +7402,6 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
   Pictures.Display = (function() {
     function Display() {}
 
-    Display.getInput = function() {
-      return $('[name=pictures-search]').val();
-    };
-
-    Display.addImages = function(images) {
-      var imagesHtml;
-      imagesHtml = Pictures.Templates.renderImagesHtml(images);
-      return $('[data-id=pictures-output]').html(imagesHtml);
-    };
-
-    Display.appendFormTo = function(selector) {
-      var formHtml;
-      formHtml = Pictures.Templates.renderForm();
-      return $(selector).html(formHtml);
-    };
-
     Display.logoSrc = "https://raw.githubusercontent.com/bwvoss/federated-dashboard-flickr-widget/master/lib/icon_10308/images.png";
 
     Display.generateLogo = function(config) {
@@ -7447,14 +7411,6 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
         imgSrc: logoSrc
       });
       return Pictures.Templates.renderLogo(config);
-    };
-
-    Display.hideForm = function() {
-      return $('[data-id=pictures-form]').hide();
-    };
-
-    Display.showForm = function() {
-      return $('[data-id=pictures-form]').show();
     };
 
     return Display;
@@ -7469,6 +7425,12 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
   Pictures.Templates = (function() {
     function Templates() {}
 
+    Templates.renderLogo = function(imgData) {
+      return _.template("<img src='<%= imgData['imgSrc'] %>' data-id='<%= imgData['dataId'] %>' style='width: <%= imgData['width'] %>px'/>", {
+        imgData: imgData
+      });
+    };
+
     Templates.renderImagesHtml = function(images) {
       return _.template("<div data-id=\"images\" id=\"flickr-images\">\n  <% for(var i = 0; i < images.length; i++){ %>\n    <img src=\"<%= images[i].url_n %>\" alt=\"<%= images[i].title %>\">\n  <% } %>\n</div>", {
         images: images
@@ -7476,13 +7438,185 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     };
 
     Templates.renderForm = function() {
-      return _.template("<div class='widget' data-id='pictures-widget-wrapper'>\n  <div class=\"widget-header\">\n    <h2 class=\"widget-title\">Pictures</h2>\n    <div data-id='pictures-form'>\n      <input name=\"pictures-search\" type=\"text\">\n      <button id=\"pictures\" data-id=\"pictures-button\">Get pictures</button><br>\n    </div>\n  </div>\n  <div class=\"widget-body\" data-id=\"pictures-output\"></div>\n</div>");
+      return _.template("<div class='widget' data-id='pictures-widget-wrapper'>\n  <div class=\"widget-header\">\n    <h2 class=\"widget-title\">Pictures</h2>\n    <div class=\"widget-form\" data-id='pictures-form'>\n      <input name=\"pictures-search\" type=\"text\">\n      <button id=\"pictures\" data-id=\"pictures-button\">Get pictures</button><br>\n    </div>\n  </div>\n  <div class=\"widget-body\" data-id=\"pictures-output\"></div>\n</div>");
     };
 
-    Templates.renderLogo = function(imgData) {
-      return _.template("<img src='<%= imgData['imgSrc'] %>' data-id='<%= imgData['dataId'] %>' style='width: <%= imgData['width'] %>px'/>", {
-        imgData: imgData
+    return Templates;
+
+  })();
+
+}).call(this);
+
+(function() {
+  namespace("Pictures.Widgets");
+
+  Pictures.Widgets.API = (function() {
+    function API() {}
+
+    API.search = function(data, displayer) {
+      var apiKey, flickr;
+      apiKey = data.key;
+      flickr = new Flickr({
+        api_key: apiKey
       });
+      return flickr.photos.search({
+        text: data.searchString,
+        per_page: 6,
+        extras: "url_n"
+      }, function(err, response) {
+        if (err) {
+          throw new Error(err);
+        }
+        return displayer.showImages(response.photos.photo);
+      });
+    };
+
+    return API;
+
+  })();
+
+}).call(this);
+
+(function() {
+  namespace('Pictures.Widgets');
+
+  Pictures.Widgets.Controller = (function() {
+    var apiKey;
+
+    apiKey = void 0;
+
+    function Controller(container, key) {
+      apiKey = key;
+      this.container = container;
+      this.display = new Pictures.Widgets.Display(container);
+    }
+
+    Controller.prototype.initialize = function() {
+      this.display.setupWidget();
+      return this.bind();
+    };
+
+    Controller.prototype.getContainer = function() {
+      return this.container;
+    };
+
+    Controller.prototype.bind = function() {
+      return $("" + this.container + " [data-id=pictures-button]").click((function(_this) {
+        return function() {
+          return _this.processClickedButton();
+        };
+      })(this));
+    };
+
+    Controller.prototype.processClickedButton = function() {
+      var input;
+      input = this.display.getInput();
+      return this.processInput(input);
+    };
+
+    Controller.prototype.processInput = function(input) {
+      if (this.isValidInput(input)) {
+        return this.loadImages(input);
+      } else {
+        return this.showInvalidInput();
+      }
+    };
+
+    Controller.prototype.loadImages = function(searchStr) {
+      var data;
+      data = {
+        key: apiKey,
+        searchString: searchStr
+      };
+      return Pictures.Widgets.API.search(data, this.display);
+    };
+
+    Controller.prototype.isValidInput = function(input) {
+      return this.isNotEmpty(input) && this.hasOnlyValidCharacters(input);
+    };
+
+    Controller.prototype.isNotEmpty = function(string) {
+      return string.length !== 0;
+    };
+
+    Controller.prototype.hasOnlyValidCharacters = function(string) {
+      return !string.match(/[^\w\s]/);
+    };
+
+    Controller.prototype.hideForm = function() {
+      return this.display.hideForm();
+    };
+
+    Controller.prototype.showForm = function() {
+      return this.display.showForm();
+    };
+
+    Controller.prototype.removeContent = function() {
+      return this.display.removeWidget();
+    };
+
+    return Controller;
+
+  })();
+
+}).call(this);
+
+(function() {
+  namespace("Pictures.Widget");
+
+  Pictures.Widgets.Display = (function() {
+    function Display(container) {
+      this.container = container;
+    }
+
+    Display.prototype.setupWidget = function() {
+      var widgetHtml;
+      widgetHtml = Pictures.Widgets.Templates.renderForm();
+      return $(this.container).append(widgetHtml);
+    };
+
+    Display.prototype.getInput = function() {
+      return $("" + this.container + " [name=pictures-search]").val();
+    };
+
+    Display.prototype.hideForm = function() {
+      return $("" + this.container + " [data-id=pictures-form]").hide();
+    };
+
+    Display.prototype.showForm = function() {
+      return $("" + this.container + " [data-id=pictures-form]").show();
+    };
+
+    Display.prototype.removeWidget = function() {
+      return $("" + this.container + " [data-id=pictures-widget-wrapper]").remove();
+    };
+
+    Display.prototype.showImages = function(images) {
+      var imagesHtml;
+      imagesHtml = Pictures.Widgets.Templates.renderImagesHtml(images);
+      return $("" + this.container + " [data-id=pictures-output]").html(imagesHtml);
+    };
+
+    return Display;
+
+  })();
+
+}).call(this);
+
+(function() {
+  namespace("Pictures.Widgets");
+
+  Pictures.Widgets.Templates = (function() {
+    function Templates() {}
+
+    Templates.renderImagesHtml = function(images) {
+      return _.template("<div data-id=\"images\" id=\"flickr-images\">\n  <% for(var i = 0; i < images.length; i++){ %>\n    <img src=\"<%= images[i].url_n %>\" alt=\"<%= images[i].title %>\">\n  <% } %>\n</div>", {
+        images: images
+      });
+    };
+
+    Templates.renderForm = function() {
+      return _.template("<div class='widget' data-id='pictures-widget-wrapper'>\n  <div class=\"widget-header\">\n    <h2 class=\"widget-title\">Pictures</h2>\n    <div class=\"widget-form\" data-id='pictures-form'>\n      <input name=\"pictures-search\" type=\"text\">\n      <button id=\"pictures\" data-id=\"pictures-button\">Get pictures</button><br>\n    </div>\n  </div>\n  <div class=\"widget-body\" data-id=\"pictures-output\"></div>\n</div>");
     };
 
     return Templates;

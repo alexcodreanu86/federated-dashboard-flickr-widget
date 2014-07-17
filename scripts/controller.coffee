@@ -1,31 +1,42 @@
 namespace('Pictures')
 
 class Pictures.Controller
-  @loadImages: (searchStr) ->
-    Pictures.API.search(searchStr, Pictures.Display.addImages)
+  @widgets: []
 
   @setupWidgetIn: (container, apiKey) ->
-    Pictures.API.key = apiKey
-    Pictures.Display.appendFormTo(container)
-    @bind()
+    widget = new Pictures.Widgets.Controller(container, apiKey)
+    widget.initialize()
+    @addToWidgetsContainer(widget)
 
-  @bind: ->
-    $('[data-id=pictures-button]').click(=> @processInput(Pictures.Display.getInput()))
+  @addToWidgetsContainer: (widget) ->
+    @widgets.push(widget)
 
-  @unbind: ->
-    $('[data-id=pictures-button]').unbind('click')
+  @getWidgets: ->
+    @widgets
 
-  @processInput: (input) ->
-    if @isValidInput(input)
-      @loadImages(input)
-    else
-      @showInvalidInput()
+  @hideForms: ->
+    @allWidgetsExecute("hideForm")
 
-  @isValidInput: (input) ->
-    @isNotEmpty(input) && @hasOnlyValidCharacters(input)
+  @showForms: ->
+    @allWidgetsExecute("showForm")
 
-  @isNotEmpty: (string) ->
-    string.length != 0
+  @allWidgetsExecute: (command) ->
+    _.each(@widgets, (widget) ->
+      widget[command]()
+    )
 
-  @hasOnlyValidCharacters: (string) ->
-    !string.match(/[^\w\s]/)
+  @closeWidgetInContainer: (container) ->
+    widget = _.filter(@widgets, (widget, index) ->
+      widget.container == container
+    )[0]
+    if widget
+      @removeWidgetContent(widget)
+      @removeFromWidgetsContainer(widget)
+
+  @removeFromWidgetsContainer: (widgetToRemove) ->
+    @widgets = _.reject(@widgets, (widget) ->
+      return widget == widgetToRemove
+    )
+
+  @removeWidgetContent: (widget) ->
+    widget.removeContent()

@@ -1,18 +1,17 @@
-namespace('Pictures')
+namespace("Pictures.Widgets")
 
-class Pictures.API
-  @search: (searchString, callback)->
-    apiKey = @key
+class Pictures.Widgets.API
+  @search: (data, displayer)->
+    apiKey = data.key
     flickr =  new Flickr(
       api_key: apiKey
     )
     flickr.photos.search({
-        text: searchString,
+        text: data.searchString,
         per_page: 6,
         extras: "url_n"
       }, (err, response) ->
         if err
           throw new Error(err)
-        callback(response.photos.photo)
+        displayer.showImages(response.photos.photo)
     )
-
