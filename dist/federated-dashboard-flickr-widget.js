@@ -7431,16 +7431,6 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
       });
     };
 
-    Templates.renderImagesHtml = function(images) {
-      return _.template("<div data-id=\"images\" id=\"flickr-images\">\n  <% for(var i = 0; i < images.length; i++){ %>\n    <img src=\"<%= images[i].url_n %>\" alt=\"<%= images[i].title %>\">\n  <% } %>\n</div>", {
-        images: images
-      });
-    };
-
-    Templates.renderForm = function() {
-      return _.template("<div class='widget' data-id='pictures-widget-wrapper'>\n  <div class=\"widget-header\">\n    <h2 class=\"widget-title\">Pictures</h2>\n    <div class=\"widget-form\" data-id='pictures-form'>\n      <input name=\"pictures-search\" type=\"text\">\n      <button id=\"pictures\" data-id=\"pictures-button\">Get pictures</button><br>\n    </div>\n  </div>\n  <div class=\"widget-body\" data-id=\"pictures-output\"></div>\n</div>");
-    };
-
     return Templates;
 
   })();
@@ -7510,6 +7500,7 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
 
     Controller.prototype.processClickedButton = function() {
       var input;
+      console.log('clicked');
       input = this.display.getInput();
       return this.processInput(input);
     };
