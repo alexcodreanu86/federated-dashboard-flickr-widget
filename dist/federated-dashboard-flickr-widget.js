@@ -7500,7 +7500,6 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
 
     Controller.prototype.processClickedButton = function() {
       var input;
-      console.log('clicked');
       input = this.display.getInput();
       return this.processInput(input);
     };
