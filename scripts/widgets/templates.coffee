@@ -23,3 +23,6 @@ class Pictures.Widgets.Templates
                   <div class="widget-body" data-id="pictures-output"></div>
                 </div>
                """)
+
+  @generateClosingButton: (dataName) ->
+    "<span class='widget-close' data-name='#{dataName}'>×</span>"

@@ -7609,6 +7609,10 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
       return _.template("<div class='widget' data-id='pictures-widget-wrapper'>\n  <div class=\"widget-header\">\n    <h2 class=\"widget-title\">Pictures</h2>\n    <div class=\"widget-form\" data-id='pictures-form'>\n      <input name=\"pictures-search\" type=\"text\">\n      <button id=\"pictures\" data-id=\"pictures-button\">Get pictures</button><br>\n    </div>\n  </div>\n  <div class=\"widget-body\" data-id=\"pictures-output\"></div>\n</div>");
     };
 
+    Templates.generateClosingButton = function(dataName) {
+      return "<span class='widget-close' data-name='" + dataName + "'>×</span>";
+    };
+
     return Templates;
 
   })();
