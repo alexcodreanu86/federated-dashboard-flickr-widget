@@ -7611,7 +7611,7 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     };
 
     Display.prototype.removeWidget = function() {
-      return $("" + this.container + " [data-id=pictures-widget-wrapper]").remove();
+      return $(this.container).remove();
     };
 
     Display.prototype.showImages = function(images) {

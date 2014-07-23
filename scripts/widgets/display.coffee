@@ -18,7 +18,7 @@ class Pictures.Widgets.Display
     $("#{@container} [data-id=pictures-form]").show()
 
   removeWidget: ->
-    $("#{@container} [data-id=pictures-widget-wrapper]").remove()
+    $(@container).remove()
 
   showImages: (images) ->
     imagesHtml = Pictures.Widgets.Templates.renderImagesHtml(images)

@@ -56,7 +56,7 @@ describe "Pictures.Widgets.Controller", ->
     controller = newController(container)
     controller.initialize()
     $("#{container} [data-id=pictures-close]").click()
-    expect($(container)).toBeEmpty()
+    expect(container).not.toBeInDOM()
 
   it 'unbind is unbinding the pictures button click processing', ->
     setupOneContainer()
