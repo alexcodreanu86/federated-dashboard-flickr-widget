@@ -3,8 +3,8 @@ namespace('Pictures')
 class Pictures.Controller
   @widgets: []
 
-  @setupWidgetIn: (container, apiKey) ->
-    widget = new Pictures.Widgets.Controller(container, apiKey)
+  @setupWidgetIn: (container, apiKey, defaultValue) ->
+    widget = new Pictures.Widgets.Controller(container, apiKey, defaultValue)
     widget.initialize()
     @addToWidgetsContainer(widget)
 
@@ -33,9 +33,13 @@ class Pictures.Controller
       widget.container == container
     )[0]
     if widget
+      @closeWidget(widget)
       @removeFromWidgetsContainer(widget)
 
   @removeFromWidgetsContainer: (widgetToRemove) ->
     @widgets = _.reject(@widgets, (widget) ->
       return widget == widgetToRemove
     )
+
+  @closeWidget: (widget) ->
+    widget.closeWidget()

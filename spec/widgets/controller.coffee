@@ -1,3 +1,8 @@
+container     = "[data-id=widget-container-1]"
+key           = "1243"
+defaultValue  = "bikes"
+requestData   = {key: key, searchString: defaultValue}
+
 class Flickr
   photos: {
             search:  (options, callback) ->
@@ -10,8 +15,8 @@ setupOneContainer = ->
 
 container = "[data-id=widget-container-1]"
 
-newController = (container) ->
-  new Pictures.Widgets.Controller(container, "1243")
+newController = (container, value) ->
+  new Pictures.Widgets.Controller(container, "1243", value)
 
 inputInto = (name, value)->
   $("[name=#{name}]").val(value)
@@ -37,11 +42,29 @@ describe "Pictures.Widgets.Controller", ->
     controller.initialize()
     expect(spy).toHaveBeenCalled()
 
+  it "initialize is trying to display data for the default value", ->
+    controller = newController(container)
+    spy = spyOn(controller, 'displayDefault')
+    controller.initialize()
+    expect(spy).toHaveBeenCalled()
+
   it "initialize is setting the widget as active", ->
     setupOneContainer()
     controller = newController(container)
     controller.initialize()
     expect(controller.isActive()).toBe(true)
+
+  it "displayDefault is loading data data when there is a default value", ->
+    controller = newController(container, defaultValue)
+    spy = spyOn(Pictures.Widgets.API, 'search')
+    controller.displayDefault()
+    expect(spy).toHaveBeenCalledWith(requestData, controller.display)
+
+  it "displayDefault doesn't do anything when no default value is provided", ->
+    controller = newController(container)
+    spy = spyOn(Pictures.Widgets.API, 'search')
+    controller.displayDefault()
+    expect(spy).not.toHaveBeenCalled()
 
   it "bind gets pictures and displays them when pictures button is clicked", ->
     setupOneContainer()

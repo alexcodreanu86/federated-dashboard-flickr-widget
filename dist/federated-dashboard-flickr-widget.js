@@ -7340,9 +7340,9 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
 
     Controller.widgets = [];
 
-    Controller.setupWidgetIn = function(container, apiKey) {
+    Controller.setupWidgetIn = function(container, apiKey, defaultValue) {
       var widget;
-      widget = new Pictures.Widgets.Controller(container, apiKey);
+      widget = new Pictures.Widgets.Controller(container, apiKey, defaultValue);
       widget.initialize();
       return this.addToWidgetsContainer(widget);
     };
@@ -7381,6 +7381,7 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
         return widget.container === container;
       })[0];
       if (widget) {
+        this.closeWidget(widget);
         return this.removeFromWidgetsContainer(widget);
       }
     };
@@ -7389,6 +7390,10 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
       return this.widgets = _.reject(this.widgets, function(widget) {
         return widget === widgetToRemove;
       });
+    };
+
+    Controller.closeWidget = function(widget) {
+      return widget.closeWidget();
     };
 
     return Controller;
@@ -7476,17 +7481,25 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
 
     apiKey = void 0;
 
-    function Controller(container, key) {
+    function Controller(container, key, defaultValue) {
       apiKey = key;
       this.container = container;
       this.display = new Pictures.Widgets.Display(container);
       this.activeStatus = false;
+      this.defaultValue = defaultValue;
     }
 
     Controller.prototype.initialize = function() {
       this.display.setupWidget();
       this.bind();
+      this.displayDefault();
       return this.setAsActive();
+    };
+
+    Controller.prototype.displayDefault = function() {
+      if (this.defaultValue) {
+        return this.loadImages(this.defaultValue);
+      }
     };
 
     Controller.prototype.setAsActive = function() {

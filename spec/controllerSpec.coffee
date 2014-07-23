@@ -78,6 +78,15 @@ describe "Pictures.Controller", ->
     Pictures.Controller.closeWidgetInContainer(container1)
     expect(Pictures.Controller.getWidgets().length).toEqual(1)
 
+  it "closeWidgetInContainer will eliminate the widget from the given container", ->
+    resetWidgetsContainer()
+    setupTwoContainers()
+    Pictures.Controller.setupWidgetIn(container1, "123456")
+    Pictures.Controller.setupWidgetIn(container2, "123456")
+    Pictures.Controller.closeWidgetInContainer(container1)
+    expect($("#{container1} [data-id=pictures-form]")).not.toBeInDOM()
+    expect($("#{container2} [data-id=pictures-form]")).toBeInDOM()
+
   it "allWidgetsExecute is removing the inactive widgets", ->
     resetWidgetsContainer()
     setupTwoContainers()
