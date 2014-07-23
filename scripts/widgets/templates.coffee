@@ -15,6 +15,7 @@ class Pictures.Widgets.Templates
                 <div class='widget' data-id='pictures-widget-wrapper'>
                   <div class="widget-header">
                     <h2 class="widget-title">Pictures</h2>
+                    <span class='widget-close' data-id='pictures-close'>×</span>
                     <div class="widget-form" data-id='pictures-form'>
                       <input name="pictures-search" type="text">
                       <button id="pictures" data-id="pictures-button">Get pictures</button><br>
@@ -23,6 +24,3 @@ class Pictures.Widgets.Templates
                   <div class="widget-body" data-id="pictures-output"></div>
                 </div>
                """)
-
-  @generateClosingButton: (dataName) ->
-    "<span class='widget-close' data-name='#{dataName}'>×</span>"

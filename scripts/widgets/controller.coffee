@@ -6,16 +6,28 @@ class Pictures.Widgets.Controller
     apiKey = key
     @container = container
     @display = new Pictures.Widgets.Display(container)
+    @activeStatus = false
 
   initialize: ->
     @display.setupWidget()
     @bind()
+    @setAsActive()
+
+  setAsActive: ->
+    @activeStatus = true
+
+  setAsInactive: ->
+    @activeStatus = false
+
+  isActive: ->
+    @activeStatus
 
   getContainer: ->
     @container
 
   bind: ->
     $("#{@container} [data-id=pictures-button]").click(=> @processClickedButton())
+    $("#{@container} [data-id=pictures-close]").click(=> @closeWidget())
 
   processClickedButton: ->
     input = @display.getInput()
@@ -31,6 +43,8 @@ class Pictures.Widgets.Controller
     data = {key: apiKey, searchString: searchStr}
     Pictures.Widgets.API.search(data, @display)
 
+  showInvalidInput: ->
+
   isValidInput: (input) ->
     @isNotEmpty(input) && @hasOnlyValidCharacters(input)
 
@@ -40,11 +54,20 @@ class Pictures.Widgets.Controller
   hasOnlyValidCharacters: (string) ->
     !string.match(/[^\w\s]/)
 
+  closeWidget: ->
+    @unbind()
+    @removeContent()
+    @setAsInactive()
+
+  removeContent: ->
+    @display.removeWidget()
+
+  unbind: ->
+    $("#{@container} [data-id=pictures-button]").unbind('click')
+    $("#{@container} [data-id=pictures-close]").unbind('click')
+
   hideForm: ->
     @display.hideForm()
 
   showForm: ->
     @display.showForm()
-
-  removeContent: ->
-    @display.removeWidget()

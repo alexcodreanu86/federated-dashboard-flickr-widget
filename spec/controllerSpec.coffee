@@ -70,15 +70,6 @@ describe "Pictures.Controller", ->
     expect($("#{container1} [data-id=pictures-form]").attr('style')).not.toEqual('display: none;')
     expect($("#{container2} [data-id=pictures-form]").attr('style')).not.toEqual('display: none;')
 
-  it "closeWidgetInContainer will eliminate the widget from the given container", ->
-    resetWidgetsContainer()
-    setupTwoContainers()
-    Pictures.Controller.setupWidgetIn(container1, "123456")
-    Pictures.Controller.setupWidgetIn(container2, "123456")
-    Pictures.Controller.closeWidgetInContainer(container1)
-    expect($("#{container1} [data-id=pictures-form]")).not.toBeInDOM()
-    expect($("#{container2} [data-id=pictures-form]")).toBeInDOM()
-
   it "closeWidgetInContainer will remove the widget from the widgets container", ->
     resetWidgetsContainer()
     setupTwoContainers()
@@ -86,3 +77,13 @@ describe "Pictures.Controller", ->
     Pictures.Controller.setupWidgetIn(container2, "123456")
     Pictures.Controller.closeWidgetInContainer(container1)
     expect(Pictures.Controller.getWidgets().length).toEqual(1)
+
+  it "allWidgetsExecute is removing the inactive widgets", ->
+    resetWidgetsContainer()
+    setupTwoContainers()
+    Pictures.Controller.setupWidgetIn(container1, "123456")
+    Pictures.Controller.setupWidgetIn(container2, "123456")
+    Pictures.Controller.widgets[0].setAsInactive()
+    Pictures.Controller.allWidgetsExecute('hideForm')
+    expect(Pictures.Controller.widgets.length).toBe(1)
+

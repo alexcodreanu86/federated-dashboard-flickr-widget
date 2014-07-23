@@ -7364,9 +7364,15 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     };
 
     Controller.allWidgetsExecute = function(command) {
-      return _.each(this.widgets, function(widget) {
-        return widget[command]();
-      });
+      return _.each(this.widgets, (function(_this) {
+        return function(widget) {
+          if (widget.isActive()) {
+            return widget[command]();
+          } else {
+            return _this.removeFromWidgetsContainer(widget);
+          }
+        };
+      })(this));
     };
 
     Controller.closeWidgetInContainer = function(container) {
@@ -7375,7 +7381,6 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
         return widget.container === container;
       })[0];
       if (widget) {
-        this.removeWidgetContent(widget);
         return this.removeFromWidgetsContainer(widget);
       }
     };
@@ -7384,10 +7389,6 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
       return this.widgets = _.reject(this.widgets, function(widget) {
         return widget === widgetToRemove;
       });
-    };
-
-    Controller.removeWidgetContent = function(widget) {
-      return widget.removeContent();
     };
 
     return Controller;
@@ -7479,11 +7480,25 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
       apiKey = key;
       this.container = container;
       this.display = new Pictures.Widgets.Display(container);
+      this.activeStatus = false;
     }
 
     Controller.prototype.initialize = function() {
       this.display.setupWidget();
-      return this.bind();
+      this.bind();
+      return this.setAsActive();
+    };
+
+    Controller.prototype.setAsActive = function() {
+      return this.activeStatus = true;
+    };
+
+    Controller.prototype.setAsInactive = function() {
+      return this.activeStatus = false;
+    };
+
+    Controller.prototype.isActive = function() {
+      return this.activeStatus;
     };
 
     Controller.prototype.getContainer = function() {
@@ -7491,9 +7506,14 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     };
 
     Controller.prototype.bind = function() {
-      return $("" + this.container + " [data-id=pictures-button]").click((function(_this) {
+      $("" + this.container + " [data-id=pictures-button]").click((function(_this) {
         return function() {
           return _this.processClickedButton();
+        };
+      })(this));
+      return $("" + this.container + " [data-id=pictures-close]").click((function(_this) {
+        return function() {
+          return _this.closeWidget();
         };
       })(this));
     };
@@ -7521,6 +7541,8 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
       return Pictures.Widgets.API.search(data, this.display);
     };
 
+    Controller.prototype.showInvalidInput = function() {};
+
     Controller.prototype.isValidInput = function(input) {
       return this.isNotEmpty(input) && this.hasOnlyValidCharacters(input);
     };
@@ -7533,16 +7555,27 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
       return !string.match(/[^\w\s]/);
     };
 
+    Controller.prototype.closeWidget = function() {
+      this.unbind();
+      this.removeContent();
+      return this.setAsInactive();
+    };
+
+    Controller.prototype.removeContent = function() {
+      return this.display.removeWidget();
+    };
+
+    Controller.prototype.unbind = function() {
+      $("" + this.container + " [data-id=pictures-button]").unbind('click');
+      return $("" + this.container + " [data-id=pictures-close]").unbind('click');
+    };
+
     Controller.prototype.hideForm = function() {
       return this.display.hideForm();
     };
 
     Controller.prototype.showForm = function() {
       return this.display.showForm();
-    };
-
-    Controller.prototype.removeContent = function() {
-      return this.display.removeWidget();
     };
 
     return Controller;
@@ -7606,11 +7639,7 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     };
 
     Templates.renderForm = function() {
-      return _.template("<div class='widget' data-id='pictures-widget-wrapper'>\n  <div class=\"widget-header\">\n    <h2 class=\"widget-title\">Pictures</h2>\n    <div class=\"widget-form\" data-id='pictures-form'>\n      <input name=\"pictures-search\" type=\"text\">\n      <button id=\"pictures\" data-id=\"pictures-button\">Get pictures</button><br>\n    </div>\n  </div>\n  <div class=\"widget-body\" data-id=\"pictures-output\"></div>\n</div>");
-    };
-
-    Templates.generateClosingButton = function(dataName) {
-      return "<span class='widget-close' data-name='" + dataName + "'>×</span>";
+      return _.template("<div class='widget' data-id='pictures-widget-wrapper'>\n  <div class=\"widget-header\">\n    <h2 class=\"widget-title\">Pictures</h2>\n    <span class='widget-close' data-id='pictures-close'>×</span>\n    <div class=\"widget-form\" data-id='pictures-form'>\n      <input name=\"pictures-search\" type=\"text\">\n      <button id=\"pictures\" data-id=\"pictures-button\">Get pictures</button><br>\n    </div>\n  </div>\n  <div class=\"widget-body\" data-id=\"pictures-output\"></div>\n</div>");
     };
 
     return Templates;

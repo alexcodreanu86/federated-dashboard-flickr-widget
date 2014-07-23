@@ -37,13 +37,57 @@ describe "Pictures.Widgets.Controller", ->
     controller.initialize()
     expect(spy).toHaveBeenCalled()
 
-  it "bind gets pictures and displays them", ->
+  it "initialize is setting the widget as active", ->
+    setupOneContainer()
+    controller = newController(container)
+    controller.initialize()
+    expect(controller.isActive()).toBe(true)
+
+  it "bind gets pictures and displays them when pictures button is clicked", ->
     setupOneContainer()
     controller = newController(container)
     controller.initialize()
     inputInto('pictures-search', 'bikes')
     $("#{container} [data-id=pictures-button]").click()
     expect($('img').length).toEqual(6)
+
+  it "bind removes the widget when close-widget button is clicked", ->
+    setupOneContainer()
+    controller = newController(container)
+    controller.initialize()
+    $("#{container} [data-id=pictures-close]").click()
+    expect($(container)).toBeEmpty()
+
+  it 'unbind is unbinding the pictures button click processing', ->
+    setupOneContainer()
+    controller = newController(container)
+    controller.initialize()
+    inputInto('pictures-search', 'bikes')
+    controller.unbind()
+    $("#{container} [data-id=pictures-button]").click()
+    expect($('img').length).toEqual(0)
+
+  it "unbind is unbinding close widget button processing", ->
+    setupOneContainer()
+    controller = newController(container)
+    controller.initialize()
+    controller.unbind()
+    $("#{container} [data-id=pictures-close]").click()
+    expect($(container)).not.toBeEmpty()
+
+  it 'closeWidget is unbinding the controller', ->
+    setupOneContainer()
+    controller = newController(container)
+    spy = spyOn(controller, 'unbind')
+    controller.closeWidget()
+    expect(spy).toHaveBeenCalled()
+
+  it 'closeWidget is setting the widget as inactive', ->
+    setupOneContainer()
+    controller = newController(container)
+    controller.initialize()
+    controller.closeWidget()
+    expect(controller.isActive()).toBe(false)
 
   it "hideForm is hiding the form", ->
     setupOneContainer()
