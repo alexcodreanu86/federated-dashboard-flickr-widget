@@ -44,6 +44,13 @@ describe "Pictures.Widget.Display", ->
     display.hideForm()
     expect($("#{container1} [data-id=pictures-form]").attr('style')).toEqual('display: none;')
 
+  it "hideForm is hiding the close-widget x", ->
+    setupOneContainer()
+    display = newDisplay(container1)
+    display.setupWidget()
+    display.hideForm()
+    expect($("#{container1} [data-id=pictures-close]").attr('style')).toEqual('display: none;')
+
   it "showForm is showing the form", ->
     setupOneContainer()
     display = newDisplay(container1)
@@ -51,6 +58,14 @@ describe "Pictures.Widget.Display", ->
     display.hideForm()
     display.showForm()
     expect($("#{container1} [data-id=pictures-form]").attr('style')).not.toEqual('display: none;')
+
+  it "showForm is showing close-widget form", ->
+    setupOneContainer()
+    display = newDisplay(container1)
+    display.setupWidget()
+    display.hideForm()
+    display.showForm()
+    expect($("#{container1} [data-id=pictures-close]").attr('style')).not.toEqual('display: none;')
 
   it "removeWidget is removing the widget's content", ->
     setupOneContainer()

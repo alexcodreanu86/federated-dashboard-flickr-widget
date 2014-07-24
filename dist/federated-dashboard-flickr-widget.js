@@ -7616,11 +7616,13 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     };
 
     Display.prototype.hideForm = function() {
-      return $("" + this.container + " [data-id=pictures-form]").hide();
+      $("" + this.container + " [data-id=pictures-form]").hide();
+      return $("" + this.container + " [data-id=pictures-close]").hide();
     };
 
     Display.prototype.showForm = function() {
-      return $("" + this.container + " [data-id=pictures-form]").show();
+      $("" + this.container + " [data-id=pictures-form]").show();
+      return $("" + this.container + " [data-id=pictures-close]").show();
     };
 
     Display.prototype.removeWidget = function() {

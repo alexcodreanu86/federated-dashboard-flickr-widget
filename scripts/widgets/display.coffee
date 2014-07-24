@@ -13,9 +13,11 @@ class Pictures.Widgets.Display
 
   hideForm: ->
     $("#{@container} [data-id=pictures-form]").hide()
+    $("#{@container} [data-id=pictures-close]").hide()
 
   showForm: ->
     $("#{@container} [data-id=pictures-form]").show()
+    $("#{@container} [data-id=pictures-close]").show()
 
   removeWidget: ->
     $(@container).remove()
