@@ -11,12 +11,24 @@ class Pictures.Widgets.Display
   getInput: ->
     $("#{@container} [name=pictures-search]").val()
 
+  exitEditMode: ->
+    @hideForm()
+    @hideCloseWidget()
+
   hideForm: ->
     $("#{@container} [data-id=pictures-form]").hide()
+
+  hideCloseWidget: ->
     $("#{@container} [data-id=pictures-close]").hide()
+
+  enterEditMode: ->
+    @showForm()
+    @showCloseWidget()
 
   showForm: ->
     $("#{@container} [data-id=pictures-form]").show()
+
+  showCloseWidget: ->
     $("#{@container} [data-id=pictures-close]").show()
 
   removeWidget: ->

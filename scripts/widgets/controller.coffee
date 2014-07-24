@@ -73,7 +73,7 @@ class Pictures.Widgets.Controller
     $("#{@container} [data-id=pictures-close]").unbind('click')
 
   hideForm: ->
-    @display.hideForm()
+    @display.exitEditMode()
 
   showForm: ->
-    @display.showForm()
+    @display.enterEditMode()

@@ -7584,11 +7584,11 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     };
 
     Controller.prototype.hideForm = function() {
-      return this.display.hideForm();
+      return this.display.exitEditMode();
     };
 
     Controller.prototype.showForm = function() {
-      return this.display.showForm();
+      return this.display.enterEditMode();
     };
 
     return Controller;
@@ -7615,13 +7615,29 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
       return $("" + this.container + " [name=pictures-search]").val();
     };
 
+    Display.prototype.exitEditMode = function() {
+      this.hideForm();
+      return this.hideCloseWidget();
+    };
+
     Display.prototype.hideForm = function() {
-      $("" + this.container + " [data-id=pictures-form]").hide();
+      return $("" + this.container + " [data-id=pictures-form]").hide();
+    };
+
+    Display.prototype.hideCloseWidget = function() {
       return $("" + this.container + " [data-id=pictures-close]").hide();
     };
 
+    Display.prototype.enterEditMode = function() {
+      this.showForm();
+      return this.showCloseWidget();
+    };
+
     Display.prototype.showForm = function() {
-      $("" + this.container + " [data-id=pictures-form]").show();
+      return $("" + this.container + " [data-id=pictures-form]").show();
+    };
+
+    Display.prototype.showCloseWidget = function() {
       return $("" + this.container + " [data-id=pictures-close]").show();
     };
 

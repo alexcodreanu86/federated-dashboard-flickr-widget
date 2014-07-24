@@ -17,8 +17,8 @@ container2 = "[data-id=widget-container-2]"
 
 describe "Pictures.Widget.Display", ->
   it "stores the container it is initialized with", ->
-    display = newDisplay(container1)
-    expect(display.container).toEqual(container1)
+    display = newDisplay(container2)
+    expect(display.container).toEqual(container2)
 
   it "setupWidget is setting up the widget in it's container", ->
     display = newDisplay(container1)
@@ -37,34 +37,34 @@ describe "Pictures.Widget.Display", ->
     expect(display1.getInput()).toEqual("text1")
     expect(display2.getInput()).toEqual("text2")
 
-  it "hideForm is hiding the form", ->
+  it "exitEditMode is hiding the form", ->
     setupOneContainer()
     display = newDisplay(container1)
     display.setupWidget()
-    display.hideForm()
+    display.exitEditMode()
     expect($("#{container1} [data-id=pictures-form]").attr('style')).toEqual('display: none;')
 
-  it "hideForm is hiding the close-widget x", ->
+  it "exitEditMode is hiding the close-widget x", ->
     setupOneContainer()
     display = newDisplay(container1)
     display.setupWidget()
-    display.hideForm()
+    display.exitEditMode()
     expect($("#{container1} [data-id=pictures-close]").attr('style')).toEqual('display: none;')
 
-  it "showForm is showing the form", ->
+  it "enterEditMode is showing the form", ->
     setupOneContainer()
     display = newDisplay(container1)
     display.setupWidget()
-    display.hideForm()
-    display.showForm()
+    display.exitEditMode()
+    display.enterEditMode()
     expect($("#{container1} [data-id=pictures-form]").attr('style')).not.toEqual('display: none;')
 
-  it "showForm is showing close-widget form", ->
+  it "enterEditMode is showing close-widget form", ->
     setupOneContainer()
     display = newDisplay(container1)
     display.setupWidget()
-    display.hideForm()
-    display.showForm()
+    display.exitEditMode()
+    display.enterEditMode()
     expect($("#{container1} [data-id=pictures-close]").attr('style')).not.toEqual('display: none;')
 
   it "removeWidget is removing the widget's content", ->
