@@ -15,6 +15,14 @@ newDisplay = (container) ->
 container1 = "[data-id=widget-container-1]"
 container2 = "[data-id=widget-container-2]"
 
+assertImageIsHidden= (imgNumber) ->
+  image = $('img')[imgNumber]
+  expect($(image).attr('style')).toEqual('display: none;')
+
+assertImageIsDisplayed = (imgNumber) ->
+  image = $('img')[imgNumber]
+  expect($(image).attr('style')).not.toEqual('display: none;')
+
 describe "Pictures.Widget.Display", ->
   it "stores the container it is initialized with", ->
     display = newDisplay(container2)
@@ -74,9 +82,22 @@ describe "Pictures.Widget.Display", ->
     display.removeWidget()
     expect($(container1)).not.toContainElement("[data-id=pictures-widget-wrapper]")
 
-  it "addImages displays the images on the screen", ->
+  it "showImages displays the images on the screen", ->
     setupOneContainer()
     display = newDisplay(container1)
     display.setupWidget()
     display.showImages(images)
     expect($('img').length).toEqual(6)
+
+  it 'showImages is sliding the pictures', ->
+    setupOneContainer()
+    jasmine.clock().install()
+    display = newDisplay(container1)
+    display.setupWidget()
+    display.showImages(images)
+    assertImageIsDisplayed(0)
+    assertImageIsHidden(1)
+    jasmine.clock().tick(3000 + 1)
+    assertImageIsHidden(0)
+    assertImageIsDisplayed(1)
+    jasmine.clock().uninstall()

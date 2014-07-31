@@ -3,6 +3,7 @@ namespace("Pictures.Widget")
 class Pictures.Widgets.Display
   constructor: (container) ->
     @container = container
+    @slider = new Pictures.Widgets.Slider(@container, 3000)
 
   setupWidget: ->
     widgetHtml = Pictures.Widgets.Templates.renderForm()
@@ -37,3 +38,4 @@ class Pictures.Widgets.Display
   showImages: (images) ->
     imagesHtml = Pictures.Widgets.Templates.renderImagesHtml(images)
     $("#{@container} [data-id=pictures-output]").html(imagesHtml)
+    @slider.startSliding()
