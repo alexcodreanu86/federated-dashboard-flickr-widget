@@ -5,9 +5,6 @@ class Flickr
 
 window.Flickr = Flickr
 
-inputInto = (name, value)->
-  $("[name=#{name}]").val(value)
-
 resetWidgetsContainer = ->
   Pictures.Controller.widgets = []
 

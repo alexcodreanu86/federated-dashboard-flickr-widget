@@ -7408,36 +7408,11 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
   Pictures.Display = (function() {
     function Display() {}
 
-    Display.logoSrc = "https://raw.githubusercontent.com/bwvoss/federated-dashboard-flickr-widget/master/lib/icon_10308/images.png";
-
     Display.generateLogo = function(config) {
-      var logoSrc;
-      logoSrc = this.logoSrc;
-      _.extend(config, {
-        imgSrc: logoSrc
-      });
-      return Pictures.Templates.renderLogo(config);
+      return "<i class=\"fa fa-camera " + config["class"] + "\" data-id=\"" + config.dataId + "\"></i>";
     };
 
     return Display;
-
-  })();
-
-}).call(this);
-
-(function() {
-  namespace('Pictures');
-
-  Pictures.Templates = (function() {
-    function Templates() {}
-
-    Templates.renderLogo = function(imgData) {
-      return _.template("<img src='<%= imgData['imgSrc'] %>' data-id='<%= imgData['dataId'] %>' style='width: <%= imgData['width'] %>px'/>", {
-        imgData: imgData
-      });
-    };
-
-    return Templates;
 
   })();
 
