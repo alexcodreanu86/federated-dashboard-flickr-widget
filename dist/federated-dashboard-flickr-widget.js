@@ -7433,6 +7433,7 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
       return flickr.photos.search({
         text: data.searchString,
         per_page: 6,
+        thumbnail_size: 'Medium',
         extras: "url_n"
       }, function(err, response) {
         if (err) {
@@ -7578,6 +7579,7 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
   Pictures.Widgets.Display = (function() {
     function Display(container) {
       this.container = container;
+      this.slider = new Pictures.Widgets.Slider(this.container, 3000);
     }
 
     Display.prototype.setupWidget = function() {
@@ -7623,10 +7625,58 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     Display.prototype.showImages = function(images) {
       var imagesHtml;
       imagesHtml = Pictures.Widgets.Templates.renderImagesHtml(images);
-      return $("" + this.container + " [data-id=pictures-output]").html(imagesHtml);
+      $("" + this.container + " [data-id=pictures-output]").html(imagesHtml);
+      return this.slider.startSliding();
     };
 
     return Display;
+
+  })();
+
+}).call(this);
+
+(function() {
+  namespace('Pictures.Widgets');
+
+  Pictures.Widgets.Slider = (function() {
+    function Slider(container, slideInterval) {
+      this.container = container;
+      this.slideInterval = slideInterval;
+    }
+
+    Slider.prototype.startSliding = function() {
+      var images;
+      images = $("" + this.container + " [data-id=pictures-output] img");
+      images.hide();
+      $(images[0]).show();
+      return this.slideImages(images);
+    };
+
+    Slider.prototype.slideImages = function(images) {
+      var currentNumber;
+      currentNumber = 0;
+      return this.slide = setInterval((function(_this) {
+        return function() {
+          currentNumber = _this.getNextImageNumber(images.length, currentNumber);
+          images.hide();
+          return $(images[currentNumber]).show();
+        };
+      })(this), this.slideInterval);
+    };
+
+    Slider.prototype.stopSliding = function() {
+      return clearInterval(this.slide);
+    };
+
+    Slider.prototype.getNextImageNumber = function(length, currentNumber) {
+      if ((currentNumber + 1) >= length) {
+        return 0;
+      } else {
+        return currentNumber + 1;
+      }
+    };
+
+    return Slider;
 
   })();
 
