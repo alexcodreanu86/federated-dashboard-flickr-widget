@@ -7340,9 +7340,9 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
 
     Controller.widgets = [];
 
-    Controller.setupWidgetIn = function(container, apiKey, defaultValue) {
+    Controller.setupWidgetIn = function(settings) {
       var widget;
-      widget = new Pictures.Widgets.Controller(container, apiKey, defaultValue);
+      widget = new Pictures.Widgets.Controller(settings);
       widget.initialize();
       return this.addToWidgetsContainer(widget);
     };
@@ -7457,12 +7457,12 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
 
     apiKey = void 0;
 
-    function Controller(container, key, defaultValue) {
-      apiKey = key;
-      this.container = container;
-      this.display = new Pictures.Widgets.Display(container);
+    function Controller(settings) {
+      apiKey = settings.key;
+      this.container = settings.container;
+      this.display = new Pictures.Widgets.Display(this.container);
       this.activeStatus = false;
-      this.defaultValue = defaultValue;
+      this.defaultValue = settings.defaultValue;
     }
 
     Controller.prototype.initialize = function() {

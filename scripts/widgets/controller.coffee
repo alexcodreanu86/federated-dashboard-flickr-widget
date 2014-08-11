@@ -2,12 +2,12 @@ namespace('Pictures.Widgets')
 
 class Pictures.Widgets.Controller
   apiKey = undefined
-  constructor: (container, key, defaultValue) ->
-    apiKey = key
-    @container = container
-    @display = new Pictures.Widgets.Display(container)
+  constructor: (settings) ->
+    apiKey = settings.key
+    @container = settings.container
+    @display = new Pictures.Widgets.Display(@container)
     @activeStatus = false
-    @defaultValue = defaultValue
+    @defaultValue = settings.defaultValue
 
   initialize: ->
     @display.setupWidget()

@@ -3,8 +3,8 @@ namespace('Pictures')
 class Pictures.Controller
   @widgets: []
 
-  @setupWidgetIn: (container, apiKey, defaultValue) ->
-    widget = new Pictures.Widgets.Controller(container, apiKey, defaultValue)
+  @setupWidgetIn: (settings) ->
+    widget = new Pictures.Widgets.Controller(settings)
     widget.initialize()
     @addToWidgetsContainer(widget)
 

@@ -16,7 +16,7 @@ setupOneContainer = ->
 container = "[data-id=widget-container-1]"
 
 newController = (container, value) ->
-  new Pictures.Widgets.Controller(container, "1243", value)
+  new Pictures.Widgets.Controller({container: container, key: "1243", defaultValue:value})
 
 inputInto = (name, value)->
   $("[name=#{name}]").val(value)
