@@ -10,7 +10,7 @@ setupTwoContainers = ->
   """
 
 newDisplay = (container) ->
-  new Pictures.Widgets.Display(container)
+  new Pictures.Widgets.Display(container, 3000)
 
 container1 = "[data-id=widget-container-1]"
 container2 = "[data-id=widget-container-2]"

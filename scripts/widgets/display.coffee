@@ -1,9 +1,10 @@
 namespace("Pictures.Widget")
 
 class Pictures.Widgets.Display
-  constructor: (container) ->
+  constructor: (container, slideSpeed, animationSpeed) ->
     @container = container
-    @slider = new Pictures.Widgets.Slider(@container, 3000)
+    @animationSpeed = animationSpeed
+    @slider = new Pictures.Widgets.Slider(@container, slideSpeed || 3000)
 
   setupWidget: ->
     widgetHtml = Pictures.Widgets.Templates.renderForm()

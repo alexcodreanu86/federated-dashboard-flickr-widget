@@ -18,7 +18,7 @@ displayImages = ->
   display.showImages(images)
 
 newDisplay = (container) ->
-  new Pictures.Widgets.Display(container)
+  new Pictures.Widgets.Display(container, slideInterval)
 
 assertImageIsHidden= (imgNumber) ->
   image = $('img')[imgNumber]

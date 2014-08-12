@@ -7460,7 +7460,7 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     function Controller(settings) {
       apiKey = settings.key;
       this.container = settings.container;
-      this.display = new Pictures.Widgets.Display(this.container);
+      this.display = new Pictures.Widgets.Display(this.container, settings.animationSpeed);
       this.activeStatus = false;
       this.defaultValue = settings.defaultValue;
     }
@@ -7577,9 +7577,10 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
   namespace("Pictures.Widget");
 
   Pictures.Widgets.Display = (function() {
-    function Display(container) {
+    function Display(container, slideSpeed, animationSpeed) {
       this.container = container;
-      this.slider = new Pictures.Widgets.Slider(this.container, 3000);
+      this.animationSpeed = animationSpeed;
+      this.slider = new Pictures.Widgets.Slider(this.container, slideSpeed || 3000);
     }
 
     Display.prototype.setupWidget = function() {

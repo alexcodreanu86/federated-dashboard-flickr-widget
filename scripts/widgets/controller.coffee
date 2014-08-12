@@ -5,7 +5,7 @@ class Pictures.Widgets.Controller
   constructor: (settings) ->
     apiKey = settings.key
     @container = settings.container
-    @display = new Pictures.Widgets.Display(@container)
+    @display = new Pictures.Widgets.Display(@container, settings.animationSpeed)
     @activeStatus = false
     @defaultValue = settings.defaultValue
 
