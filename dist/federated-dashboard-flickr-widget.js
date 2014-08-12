@@ -7460,7 +7460,7 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     function Controller(settings) {
       apiKey = settings.key;
       this.container = settings.container;
-      this.display = new Pictures.Widgets.Display(this.container, settings.animationSpeed);
+      this.display = new Pictures.Widgets.Display(this.container, settings.slideSpeed, settings.animationSpeed);
       this.activeStatus = false;
       this.defaultValue = settings.defaultValue;
     }
