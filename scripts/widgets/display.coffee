@@ -1,7 +1,7 @@
 namespace("Pictures.Widget")
 
 class Pictures.Widgets.Display
-  constructor: (container, slideSpeed, animationSpeed) ->
+  constructor: (container, animationSpeed, slideSpeed) ->
     @container = container
     @animationSpeed = animationSpeed
     @slider = new Pictures.Widgets.Slider(@container, slideSpeed || 3000)
@@ -18,20 +18,20 @@ class Pictures.Widgets.Display
     @hideCloseWidget()
 
   hideForm: ->
-    $("#{@container} [data-id=pictures-form]").hide()
+    $("#{@container} [data-id=pictures-form]").hide(@animationSpeed)
 
   hideCloseWidget: ->
-    $("#{@container} [data-id=pictures-close]").hide()
+    $("#{@container} [data-id=pictures-close]").hide(@animationSpeed)
 
   enterEditMode: ->
     @showForm()
     @showCloseWidget()
 
   showForm: ->
-    $("#{@container} [data-id=pictures-form]").show()
+    $("#{@container} [data-id=pictures-form]").show(@animationSpeed)
 
   showCloseWidget: ->
-    $("#{@container} [data-id=pictures-close]").show()
+    $("#{@container} [data-id=pictures-close]").show(@animationSpeed)
 
   removeWidget: ->
     $(@container).remove()

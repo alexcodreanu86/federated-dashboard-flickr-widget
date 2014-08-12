@@ -7460,7 +7460,7 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     function Controller(settings) {
       apiKey = settings.key;
       this.container = settings.container;
-      this.display = new Pictures.Widgets.Display(this.container, settings.slideSpeed, settings.animationSpeed);
+      this.display = new Pictures.Widgets.Display(this.container, settings.animationSpeed, settings.slideSpeed);
       this.activeStatus = false;
       this.defaultValue = settings.defaultValue;
     }
@@ -7577,7 +7577,7 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
   namespace("Pictures.Widget");
 
   Pictures.Widgets.Display = (function() {
-    function Display(container, slideSpeed, animationSpeed) {
+    function Display(container, animationSpeed, slideSpeed) {
       this.container = container;
       this.animationSpeed = animationSpeed;
       this.slider = new Pictures.Widgets.Slider(this.container, slideSpeed || 3000);
@@ -7599,11 +7599,11 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     };
 
     Display.prototype.hideForm = function() {
-      return $("" + this.container + " [data-id=pictures-form]").hide();
+      return $("" + this.container + " [data-id=pictures-form]").hide(this.animationSpeed);
     };
 
     Display.prototype.hideCloseWidget = function() {
-      return $("" + this.container + " [data-id=pictures-close]").hide();
+      return $("" + this.container + " [data-id=pictures-close]").hide(this.animationSpeed);
     };
 
     Display.prototype.enterEditMode = function() {
@@ -7612,11 +7612,11 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     };
 
     Display.prototype.showForm = function() {
-      return $("" + this.container + " [data-id=pictures-form]").show();
+      return $("" + this.container + " [data-id=pictures-form]").show(this.animationSpeed);
     };
 
     Display.prototype.showCloseWidget = function() {
-      return $("" + this.container + " [data-id=pictures-close]").show();
+      return $("" + this.container + " [data-id=pictures-close]").show(this.animationSpeed);
     };
 
     Display.prototype.removeWidget = function() {
