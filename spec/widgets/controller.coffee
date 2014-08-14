@@ -138,36 +138,41 @@ describe "Pictures.Widgets.Controller", ->
     newRefreshController = (container, refreshRate) ->
       new Pictures.Widgets.Controller({container: container, key: "1243", refreshRate: refreshRate})
 
-    oneMinute = 60 * 1000
+    oneMinute   = 60 * 1000
+    controller  = undefined
+    spy         = undefined
 
-    it "refreshes the informations when refreshInterval is provided", ->
+    beforeEach ->
       controller = newRefreshController(container, 50)
       controller.setAsActive()
       spy = spyOn(Pictures.Widgets.API, 'search')
       jasmine.clock().install()
+
+    afterEach ->
+      jasmine.clock().uninstall()
+
+    it "refreshes the informations when refreshInterval is provided", ->
       controller.loadImages('some input')
       expect(spy.calls.count()).toEqual(1)
       jasmine.clock().tick(oneMinute)
       expect(spy.calls.count()).toEqual(2)
-      jasmine.clock().uninstall()
 
     it "will not refresh if the widget is closed", ->
-      controller = newRefreshController(container, 50)
-      controller.setAsActive()
-      spy = spyOn(Pictures.Widgets.API, 'search')
-      jasmine.clock().install()
       controller.loadImages('some input')
       expect(spy.calls.count()).toEqual(1)
       controller.closeWidget()
       jasmine.clock().tick(oneMinute)
       expect(spy.calls.count()).toEqual(1)
-      jasmine.clock().uninstall()
+
+    it "will not refresh if no refreshRate is specified", ->
+      controller = newRefreshController(container, undefined)
+      controller.setAsActive()
+      controller.loadImages('some input')
+      expect(spy.calls.count()).toEqual(1)
+      jasmine.clock().tick(oneMinute)
+      expect(spy.calls.count()).toEqual(1)
 
     it "will refresh only for the new search", ->
-      controller = newRefreshController(container, 50)
-      controller.setAsActive()
-      spy = spyOn(Pictures.Widgets.API, 'search')
-      jasmine.clock().install()
       controller.loadImages('some input')
       expect(spy).toHaveBeenCalledWith({key: "1243", searchString: 'some input'}, controller.display)
       controller.loadImages('other input')
@@ -175,4 +180,3 @@ describe "Pictures.Widgets.Controller", ->
       jasmine.clock().tick(oneMinute)
       expect(spy.calls.argsFor(2)[0]).toEqual({key: "1243", searchString: 'other input'})
       expect(spy.calls.count()).toEqual(3)
-      jasmine.clock().uninstall()
