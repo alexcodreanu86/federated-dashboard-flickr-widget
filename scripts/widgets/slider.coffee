@@ -12,6 +12,7 @@ class Pictures.Widgets.Slider
     @slideImages(images)
 
   slideImages: (images) ->
+    @stopSliding() if @slide
     currentNumber = 0
     @slide = setInterval( =>
       currentNumber = @getNextImageNumber(images.length, currentNumber)

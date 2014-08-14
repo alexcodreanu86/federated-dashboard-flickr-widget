@@ -7463,6 +7463,7 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
       this.display = new Pictures.Widgets.Display(this.container, settings.animationSpeed, settings.slideSpeed);
       this.activeStatus = false;
       this.defaultValue = settings.defaultValue;
+      this.refreshRate = settings.refreshRate;
     }
 
     Controller.prototype.initialize = function() {
@@ -7527,7 +7528,27 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
         key: apiKey,
         searchString: searchStr
       };
-      return Pictures.Widgets.API.search(data, this.display);
+      Pictures.Widgets.API.search(data, this.display);
+      if (this.refreshRate) {
+        this.clearActiveTimeout();
+        return this.refreshImages(searchStr);
+      }
+    };
+
+    Controller.prototype.clearActiveTimeout = function() {
+      if (this.timeout) {
+        return clearTimeout(this.timeout);
+      }
+    };
+
+    Controller.prototype.refreshImages = function(searchStr) {
+      return this.timeout = setTimeout((function(_this) {
+        return function() {
+          if (_this.isActive()) {
+            return _this.loadImages(searchStr);
+          }
+        };
+      })(this), this.refreshRate * 1000);
     };
 
     Controller.prototype.showInvalidInput = function() {};
@@ -7655,6 +7676,9 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
 
     Slider.prototype.slideImages = function(images) {
       var currentNumber;
+      if (this.slide) {
+        this.stopSliding();
+      }
       currentNumber = 0;
       return this.slide = setInterval((function(_this) {
         return function() {

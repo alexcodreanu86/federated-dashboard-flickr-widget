@@ -3,11 +3,12 @@ namespace('Pictures.Widgets')
 class Pictures.Widgets.Controller
   apiKey = undefined
   constructor: (settings) ->
-    apiKey = settings.key
-    @container = settings.container
-    @display = new Pictures.Widgets.Display(@container, settings.animationSpeed, settings.slideSpeed)
+    apiKey        = settings.key
+    @container    = settings.container
+    @display      = new Pictures.Widgets.Display(@container, settings.animationSpeed, settings.slideSpeed)
     @activeStatus = false
     @defaultValue = settings.defaultValue
+    @refreshRate  = settings.refreshRate
 
   initialize: ->
     @display.setupWidget()
@@ -48,6 +49,17 @@ class Pictures.Widgets.Controller
   loadImages: (searchStr) ->
     data = {key: apiKey, searchString: searchStr}
     Pictures.Widgets.API.search(data, @display)
+    if @refreshRate
+      @clearActiveTimeout()
+      @refreshImages(searchStr)
+
+  clearActiveTimeout: ->
+    clearTimeout(@timeout) if @timeout
+
+  refreshImages: (searchStr) ->
+    @timeout = setTimeout(=>
+      @loadImages(searchStr) if @isActive()
+    , @refreshRate * 1000)
 
   showInvalidInput: ->
 
