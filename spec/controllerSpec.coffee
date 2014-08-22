@@ -50,18 +50,18 @@ describe "Pictures.Controller", ->
     setupWidgetInContainer('#sandbox')
     expect(Pictures.Controller.getWidgets().length).toEqual(1)
 
-  it "hideForms is hiding the forms of all the widgets that are initialized", ->
+  it "exitEditMode is hiding the forms of all the widgets that are initialized", ->
     resetWidgetsContainer()
     setupTwoWidgetsInContainers()
-    Pictures.Controller.hideForms()
+    Pictures.Controller.exitEditMode()
     expect($("#{container1} [data-id=pictures-form]").attr('style')).toEqual('display: none;')
     expect($("#{container2} [data-id=pictures-form]").attr('style')).toEqual('display: none;')
 
-  it "showForms is showing the forms of all the widgets that are initialized", ->
+  it "enterEditMode is showing the forms of all the widgets that are initialized", ->
     resetWidgetsContainer()
     setupTwoWidgetsInContainers()
-    Pictures.Controller.hideForms()
-    Pictures.Controller.showForms()
+    Pictures.Controller.exitEditMode()
+    Pictures.Controller.enterEditMode()
     expect($("#{container1} [data-id=pictures-form]").attr('style')).not.toEqual('display: none;')
     expect($("#{container2} [data-id=pictures-form]").attr('style')).not.toEqual('display: none;')
 
@@ -82,6 +82,6 @@ describe "Pictures.Controller", ->
     resetWidgetsContainer()
     setupTwoWidgetsInContainers()
     Pictures.Controller.widgets[0].setAsInactive()
-    Pictures.Controller.allWidgetsExecute('hideForm')
+    Pictures.Controller.allWidgetsExecute('exitEditMode')
     expect(Pictures.Controller.widgets.length).toBe(1)
 
