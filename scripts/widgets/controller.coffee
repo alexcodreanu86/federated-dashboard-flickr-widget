@@ -33,8 +33,11 @@ class Pictures.Widgets.Controller
     @container
 
   bind: ->
-    $("#{@container} [data-id=pictures-button]").click(=> @processClickedButton())
-    $("#{@container} [data-id=pictures-close]").click(=> @closeWidget())
+    $("#{@container} [data-name=widget-form]").on 'submit',  (e) =>
+      e.preventDefault()
+      @processClickedButton()
+
+    $("#{@container} [data-name=widget-close]").on 'click', => @closeWidget()
 
   processClickedButton: ->
     input = @display.getInput()
@@ -81,8 +84,8 @@ class Pictures.Widgets.Controller
     @display.removeWidget()
 
   unbind: ->
-    $("#{@container} [data-id=pictures-button]").unbind('click')
-    $("#{@container} [data-id=pictures-close]").unbind('click')
+    $("#{@container} [data-name=widget-form]").unbind('submit')
+    $("#{@container} [data-name=widget-close]").unbind('click')
 
   exitEditMode: ->
     @display.exitEditMode()

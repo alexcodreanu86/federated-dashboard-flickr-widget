@@ -1,7 +1,7 @@
 namespace("Pictures.Widgets")
 
 class Pictures.Widgets.API
-  @search: (data, displayer)->
+  @search: (data, displayer) ->
     apiKey = data.key
     flickr =  new Flickr(
       api_key: apiKey

@@ -11,32 +11,12 @@ class Pictures.Widgets.Display
     $(@container).append(widgetHtml)
 
   getInput: ->
-    $("#{@container} [name=pictures-search]").val()
-
-  exitEditMode: ->
-    @hideForm()
-    @hideCloseWidget()
-
-  hideForm: ->
-    $("#{@container} [data-id=pictures-form]").hide(@animationSpeed)
-
-  hideCloseWidget: ->
-    $("#{@container} [data-id=pictures-close]").hide(@animationSpeed)
-
-  enterEditMode: ->
-    @showForm()
-    @showCloseWidget()
-
-  showForm: ->
-    $("#{@container} [data-id=pictures-form]").show(@animationSpeed)
-
-  showCloseWidget: ->
-    $("#{@container} [data-id=pictures-close]").show(@animationSpeed)
+    $("#{@container} [name=widget-input]").val()
 
   removeWidget: ->
     $(@container).remove()
 
   showImages: (images) ->
     imagesHtml = Pictures.Widgets.Templates.renderImagesHtml(images)
-    $("#{@container} [data-id=pictures-output]").html(imagesHtml)
+    $("#{@container} [data-name=widget-output]").html(imagesHtml)
     @slider.startSliding()

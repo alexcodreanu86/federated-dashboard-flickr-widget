@@ -18,121 +18,99 @@ container = "[data-id=widget-container-1]"
 newController = (container, value) ->
   new Pictures.Widgets.Controller({container: container, key: "1243", defaultValue:value})
 
-inputInto = (name, value)->
-  $("[name=#{name}]").val(value)
-
 describe "Pictures.Widgets.Controller", ->
-  it "stores the container that it is initialized with", ->
-    controller = newController(container)
-    expect(controller.getContainer()).toEqual(container)
+  describe '#initialize', ->
+    it "sets widget up in its container", ->
+      setupOneContainer()
+      controller = newController(container)
+      controller.initialize()
+      expect($(container)).not.toBeEmpty()
 
-  it "stores a new instance of Pictures.Widget.Display when instantiated", ->
-    controller = newController(container)
-    expect(controller.display).toBeDefined()
+    it "binds the controller", ->
+      controller = newController(container)
+      spy = spyOn(controller, 'bind')
+      controller.initialize()
+      expect(spy).toHaveBeenCalled()
 
-  it "initialize sets widget up in its container", ->
-    setupOneContainer()
-    controller = newController(container)
-    controller.initialize()
-    expect($(container)).not.toBeEmpty()
+    it "displays data for the default value", ->
+      controller = newController(container)
+      spy = spyOn(controller, 'displayDefault')
+      controller.initialize()
+      expect(spy).toHaveBeenCalled()
 
-  it "initialize is binding the controller", ->
-    controller = newController(container)
-    spy = spyOn(controller, 'bind')
-    controller.initialize()
-    expect(spy).toHaveBeenCalled()
+    it "sets the widget as active", ->
+      setupOneContainer()
+      controller = newController(container)
+      controller.initialize()
+      expect(controller.isActive()).toBe(true)
 
-  it "initialize is trying to display data for the default value", ->
-    controller = newController(container)
-    spy = spyOn(controller, 'displayDefault')
-    controller.initialize()
-    expect(spy).toHaveBeenCalled()
+  describe '#displayDefault', ->
+    it "loads data data when there is a default value", ->
+      controller = newController(container, defaultValue)
+      spy = spyOn(Pictures.Widgets.API, 'search')
+      controller.displayDefault()
+      expect(spy).toHaveBeenCalledWith(requestData, controller.display)
 
-  it "initialize is setting the widget as active", ->
-    setupOneContainer()
-    controller = newController(container)
-    controller.initialize()
-    expect(controller.isActive()).toBe(true)
+    it "does NOT load data when no default value is provided", ->
+      controller = newController(container)
+      spy = spyOn(Pictures.Widgets.API, 'search')
+      controller.displayDefault()
+      expect(spy).not.toHaveBeenCalled()
 
-  it "displayDefault is loading data data when there is a default value", ->
-    controller = newController(container, defaultValue)
-    spy = spyOn(Pictures.Widgets.API, 'search')
-    controller.displayDefault()
-    expect(spy).toHaveBeenCalledWith(requestData, controller.display)
+  describe '#bind', ->
+    it "gets pictures and displays them when pictures button is clicked", ->
+      setupOneContainer()
+      controller = newController(container)
+      controller.initialize()
+      $('[name=widget-input]').val('bikes')
+      $("#{container} [data-name=form-button]").click()
+      expect($('img').length).toEqual(6)
 
-  it "displayDefault doesn't do anything when no default value is provided", ->
-    controller = newController(container)
-    spy = spyOn(Pictures.Widgets.API, 'search')
-    controller.displayDefault()
-    expect(spy).not.toHaveBeenCalled()
+    it "removes the widget when close-widget button is clicked", ->
+      setupOneContainer()
+      controller = newController(container)
+      controller.initialize()
+      $("#{container} [data-name=widget-close]").click()
+      expect(container).not.toBeInDOM()
 
-  it "bind gets pictures and displays them when pictures button is clicked", ->
-    setupOneContainer()
-    controller = newController(container)
-    controller.initialize()
-    inputInto('pictures-search', 'bikes')
-    $("#{container} [data-id=pictures-button]").click()
-    expect($('img').length).toEqual(6)
+  describe '#unbind', ->
+    it 'unbinds the pictures button click processing', ->
+      setupOneContainer()
+      controller = newController(container)
+      controller.initialize()
+      spy = spyOn $.prototype, 'unbind'
+      controller.unbind()
+      expect(spy).toHaveBeenCalledWith('submit')
 
-  it "bind removes the widget when close-widget button is clicked", ->
-    setupOneContainer()
-    controller = newController(container)
-    controller.initialize()
-    $("#{container} [data-id=pictures-close]").click()
-    expect(container).not.toBeInDOM()
+    it "unbinds close widget button processing", ->
+      setupOneContainer()
+      controller = newController(container)
+      controller.initialize()
+      controller.unbind()
+      $("#{container} [data-name=widget-close]").click()
+      expect($(container)).not.toBeEmpty()
 
-  it 'unbind is unbinding the pictures button click processing', ->
-    setupOneContainer()
-    controller = newController(container)
-    controller.initialize()
-    inputInto('pictures-search', 'bikes')
-    controller.unbind()
-    $("#{container} [data-id=pictures-button]").click()
-    expect($('img').length).toEqual(0)
+  describe '#closeWidget', ->
+    it 'unbinds the controller', ->
+      setupOneContainer()
+      controller = newController(container)
+      spy = spyOn(controller, 'unbind')
+      controller.closeWidget()
+      expect(spy).toHaveBeenCalled()
 
-  it "unbind is unbinding close widget button processing", ->
-    setupOneContainer()
-    controller = newController(container)
-    controller.initialize()
-    controller.unbind()
-    $("#{container} [data-id=pictures-close]").click()
-    expect($(container)).not.toBeEmpty()
-
-  it 'closeWidget is unbinding the controller', ->
-    setupOneContainer()
-    controller = newController(container)
-    spy = spyOn(controller, 'unbind')
-    controller.closeWidget()
-    expect(spy).toHaveBeenCalled()
-
-  it 'closeWidget is setting the widget as inactive', ->
-    setupOneContainer()
-    controller = newController(container)
-    controller.initialize()
-    controller.closeWidget()
-    expect(controller.isActive()).toBe(false)
-
-  it "exitEditMode is hiding the form", ->
-    setupOneContainer()
-    controller = newController(container)
-    controller.initialize()
-    controller.exitEditMode()
-    expect($("#{container} [data-id=pictures-form]").attr('style')).toEqual('display: none;')
-
-  it "enterEditMode is showing the form", ->
-    setupOneContainer()
-    controller = newController(container)
-    controller.initialize()
-    controller.exitEditMode()
-    controller.enterEditMode()
-    expect($("#{container} [data-id=pictures-form]").attr('style')).not.toEqual('display: none;')
+    it 'sets the widget as inactive', ->
+      setupOneContainer()
+      controller = newController(container)
+      controller.initialize()
+      controller.closeWidget()
+      expect(controller.isActive()).toBe(false)
 
   it "removeContent is removing the widget's content", ->
     setupOneContainer()
     controller = newController(container)
     controller.initialize()
     controller.removeContent()
-    expect($(container)).not.toContainElement("[data-id=pictures-widget-wrapper]")
+    expect($(container)).not.toContainElement("[data-name=widget-wrapper]")
 
   describe "loadImages", ->
     newRefreshController = (container, refreshRate) ->

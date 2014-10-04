@@ -7338,62 +7338,8 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
   Pictures.Controller = (function() {
     function Controller() {}
 
-    Controller.widgets = [];
-
     Controller.setupWidgetIn = function(settings) {
-      var widget;
-      widget = new Pictures.Widgets.Controller(settings);
-      widget.initialize();
-      return this.addToWidgetsContainer(widget);
-    };
-
-    Controller.addToWidgetsContainer = function(widget) {
-      return this.widgets.push(widget);
-    };
-
-    Controller.getWidgets = function() {
-      return this.widgets;
-    };
-
-    Controller.exitEditMode = function() {
-      return this.allWidgetsExecute("exitEditMode");
-    };
-
-    Controller.enterEditMode = function() {
-      return this.allWidgetsExecute("enterEditMode");
-    };
-
-    Controller.allWidgetsExecute = function(command) {
-      return _.each(this.widgets, (function(_this) {
-        return function(widget) {
-          if (widget.isActive()) {
-            return widget[command]();
-          } else {
-            return _this.removeFromWidgetsContainer(widget);
-          }
-        };
-      })(this));
-    };
-
-    Controller.closeWidgetInContainer = function(container) {
-      var widget;
-      widget = _.filter(this.widgets, function(widget, index) {
-        return widget.container === container;
-      })[0];
-      if (widget) {
-        this.closeWidget(widget);
-        return this.removeFromWidgetsContainer(widget);
-      }
-    };
-
-    Controller.removeFromWidgetsContainer = function(widgetToRemove) {
-      return this.widgets = _.reject(this.widgets, function(widget) {
-        return widget === widgetToRemove;
-      });
-    };
-
-    Controller.closeWidget = function(widget) {
-      return widget.closeWidget();
+      return new Pictures.Widgets.Controller(settings).initialize();
     };
 
     return Controller;
@@ -7496,12 +7442,13 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     };
 
     Controller.prototype.bind = function() {
-      $("" + this.container + " [data-id=pictures-button]").click((function(_this) {
-        return function() {
+      $("" + this.container + " [data-name=widget-form]").on('submit', (function(_this) {
+        return function(e) {
+          e.preventDefault();
           return _this.processClickedButton();
         };
       })(this));
-      return $("" + this.container + " [data-id=pictures-close]").click((function(_this) {
+      return $("" + this.container + " [data-name=widget-close]").on('click', (function(_this) {
         return function() {
           return _this.closeWidget();
         };
@@ -7576,8 +7523,8 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     };
 
     Controller.prototype.unbind = function() {
-      $("" + this.container + " [data-id=pictures-button]").unbind('click');
-      return $("" + this.container + " [data-id=pictures-close]").unbind('click');
+      $("" + this.container + " [data-name=widget-form]").unbind('submit');
+      return $("" + this.container + " [data-name=widget-close]").unbind('click');
     };
 
     Controller.prototype.exitEditMode = function() {
@@ -7611,33 +7558,7 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     };
 
     Display.prototype.getInput = function() {
-      return $("" + this.container + " [name=pictures-search]").val();
-    };
-
-    Display.prototype.exitEditMode = function() {
-      this.hideForm();
-      return this.hideCloseWidget();
-    };
-
-    Display.prototype.hideForm = function() {
-      return $("" + this.container + " [data-id=pictures-form]").hide(this.animationSpeed);
-    };
-
-    Display.prototype.hideCloseWidget = function() {
-      return $("" + this.container + " [data-id=pictures-close]").hide(this.animationSpeed);
-    };
-
-    Display.prototype.enterEditMode = function() {
-      this.showForm();
-      return this.showCloseWidget();
-    };
-
-    Display.prototype.showForm = function() {
-      return $("" + this.container + " [data-id=pictures-form]").show(this.animationSpeed);
-    };
-
-    Display.prototype.showCloseWidget = function() {
-      return $("" + this.container + " [data-id=pictures-close]").show(this.animationSpeed);
+      return $("" + this.container + " [name=widget-input]").val();
     };
 
     Display.prototype.removeWidget = function() {
@@ -7647,7 +7568,7 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     Display.prototype.showImages = function(images) {
       var imagesHtml;
       imagesHtml = Pictures.Widgets.Templates.renderImagesHtml(images);
-      $("" + this.container + " [data-id=pictures-output]").html(imagesHtml);
+      $("" + this.container + " [data-name=widget-output]").html(imagesHtml);
       return this.slider.startSliding();
     };
 
@@ -7668,7 +7589,7 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
 
     Slider.prototype.startSliding = function() {
       var images;
-      images = $("" + this.container + " [data-id=pictures-output] img");
+      images = $("" + this.container + " [data-name=widget-output] img");
       images.hide();
       $(images[0]).show();
       return this.slideImages(images);
@@ -7720,7 +7641,7 @@ Utils.handleURLRequest = function (verb, url, processResult, postdata) {
     };
 
     Templates.renderForm = function() {
-      return _.template("<div class='widget' data-id='pictures-widget-wrapper'>\n  <div class=\"widget-header\">\n    <h2 class=\"widget-title\">Pictures</h2>\n    <span class='widget-close' data-id='pictures-close'>×</span>\n    <div class=\"widget-form\" data-id='pictures-form'>\n      <input name=\"pictures-search\" type=\"text\">\n      <button id=\"pictures\" data-id=\"pictures-button\">Get pictures</button><br>\n    </div>\n  </div>\n  <div class=\"widget-body\" data-id=\"pictures-output\"></div>\n</div>");
+      return _.template("<div class='widget' data-name='widget-wrapper'>\n  <div class='widget-header' data-name='sortable-handle'>\n    <h2 class=\"widget-title\">Pictures</h2>\n    <span class='widget-close' data-name='widget-close'>×</span>\n    <form class='widget-form' data-name='widget-form'>\n      <input name='widget-input' type='text' autofocus='true'>\n      <button data-name=\"form-button\">Get pictures</button><br>\n    </form>\n  </div>\n  <div class=\"widget-body\" data-name=\"widget-output\"></div>\n</div>", {});
     };
 
     return Templates;

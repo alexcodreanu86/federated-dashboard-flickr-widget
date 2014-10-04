@@ -6,7 +6,7 @@ class Pictures.Widgets.Slider
     @slideInterval = slideInterval
 
   startSliding: ->
-    images = $("#{@container} [data-id=pictures-output] img")
+    images = $("#{@container} [data-name=widget-output] img")
     images.hide()
     $(images[0]).show()
     @slideImages(images)
